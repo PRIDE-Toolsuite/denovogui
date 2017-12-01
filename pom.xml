@@ -2,6 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>uk.ac.ebi.pride.cluster</groupId>
+        <artifactId>cluster-data-generation</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+
     <groupId>com.compomics.denovogui</groupId>
     <artifactId>DeNovoGUI</artifactId>
     <packaging>jar</packaging>
@@ -93,6 +101,21 @@
         <!-- Plugins -->
         <plugins>
 
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../${bin.directory.build}/${artifactId}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- SVG to PNG converter plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -127,8 +150,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <showDeprecation>true</showDeprecation>
                     <debug>true</debug>
                 </configuration>
@@ -140,18 +163,29 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                    <outputDirectory>../${bin.directory.build}/${artifactId}/</outputDirectory>
                     <archive>
                         <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>com.compomics.denovogui.DeNovoGUIZipFileChecker</mainClass>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib</classpathPrefix>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.compomics.denovogui.DeNovoGUIZipFileChecker</mainClass>
+                            <!--<mainClass>com.your.domain.Program</mainClass>-->
                         </manifest>
                     </archive>
-                    <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}
-                    </outputDirectory>
                 </configuration>
+                <!--<configuration>-->
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
+                            <!--<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
+                            <!--<mainClass>com.compomics.denovogui.DeNovoGUIZipFileChecker</mainClass>-->
+                            <!--<addClasspath>true</addClasspath>-->
+                            <!--<classpathPrefix>lib</classpathPrefix>-->
+                        <!--</manifest>-->
+                    <!--</archive>-->
+                    <!--<outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}-->
+                    <!--</outputDirectory>-->
+                <!--</configuration>-->
             </plugin>
 
             <!-- Dependency plugin -->
@@ -166,7 +200,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/${project.artifactId}-${project.version}/lib
+                            <outputDirectory>../${bin.directory.build}/${artifactId}/lib
                             </outputDirectory>
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
@@ -207,7 +241,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/${project.name}-${project.version}/
+                            <outputDirectory>../${bin.directory.build}/${artifactId}/
                             </outputDirectory>
                             <resources>
                                 <resource>
@@ -222,6 +256,19 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>../${bin.directory.build}/${project.artifactId}/</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
 
             <!-- Create javadoc on build -->
